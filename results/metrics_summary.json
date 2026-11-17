@@ -1,0 +1,399 @@
+{
+  "metrics": {
+    "total_parsed_lines": 47,
+    "total_ticks": 64,
+    "preemptions": 4,
+    "dispatches": 5,
+    "completions": 7,
+    "monitored_tasks": [
+      1,
+      2,
+      3
+    ]
+  },
+  "task_stats": {
+    "1": {
+      "id": 1,
+      "events": [
+        {
+          "tick": 0,
+          "event": "Task 1 ('SysMonitor') entered READY queue"
+        },
+        {
+          "tick": 1,
+          "event": "Dispatched initial Task 1 ('SysMonitor') to RUNNING"
+        },
+        {
+          "tick": 3,
+          "event": "PREEMPTION: Quantum expired (Q=3). Switched Task 1 -> Task 2 (remaining: 3 ticks)"
+        },
+        {
+          "tick": 12,
+          "event": "Task 1 ('SysMonitor') TERMINATED. Burst: 6, Wait: 6 ticks, Turnaround: 12 ticks"
+        },
+        {
+          "tick": 20,
+          "event": "ANTI-STARVATION: Task 1 ('BatchJob') aged: priority 8 -> 7 (waited 4 ticks)"
+        },
+        {
+          "tick": 24,
+          "event": "ANTI-STARVATION: Task 1 ('BatchJob') aged: priority 7 -> 6 (waited 8 ticks)"
+        },
+        {
+          "tick": 24,
+          "event": "Dispatched Task 1 (prio 6) to RUNNING"
+        },
+        {
+          "tick": 30,
+          "event": "Task 1 ('BatchJob') completed burst. Terminating."
+        },
+        {
+          "tick": 33,
+          "event": "PREEMPTION: Quantum expired (Q=2). Switched Task 1 -> Task 2"
+        },
+        {
+          "tick": 35,
+          "event": "Task 1 TERMINATED. Burst: 4, Wait: 2 ticks, Turnaround: 6 ticks"
+        }
+      ]
+    },
+    "2": {
+      "id": 2,
+      "events": [
+        {
+          "tick": 0,
+          "event": "Task 2 ('NetPacket') entered READY queue"
+        },
+        {
+          "tick": 6,
+          "event": "PREEMPTION: Quantum expired (Q=3). Switched Task 2 -> Task 3 (remaining: 1 ticks)"
+        },
+        {
+          "tick": 12,
+          "event": "Dispatched next Task 2 ('NetPacket') to RUNNING"
+        },
+        {
+          "tick": 13,
+          "event": "Task 2 ('NetPacket') TERMINATED. Burst: 4, Wait: 7 ticks, Turnaround: 13 ticks"
+        },
+        {
+          "tick": 16,
+          "event": "Dispatched Task 2 (prio 1) to RUNNING"
+        },
+        {
+          "tick": 24,
+          "event": "Task 2 ('RealtimeAudio') completed burst. Terminating."
+        },
+        {
+          "tick": 37,
+          "event": "Task 2 TERMINATED. Burst: 4, Wait: 4 ticks, Turnaround: 8 ticks"
+        }
+      ]
+    },
+    "3": {
+      "id": 3,
+      "events": [
+        {
+          "tick": 0,
+          "event": "Task 3 ('DiskFlusher') entered READY queue"
+        },
+        {
+          "tick": 9,
+          "event": "PREEMPTION: Quantum expired (Q=3). Switched Task 3 -> Task 1 (remaining: 2 ticks)"
+        },
+        {
+          "tick": 13,
+          "event": "Dispatched next Task 3 ('DiskFlusher') to RUNNING"
+        },
+        {
+          "tick": 15,
+          "event": "Task 3 ('DiskFlusher') TERMINATED. Burst: 5, Wait: 7 ticks, Turnaround: 15 ticks"
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "BOOT",
+      "message": "Layer 1 & 2: Kernel console and 16550 UART COM1 initialized."
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "BOOT",
+      "message": "Layer 8: Free-List memory allocator online (64 KiB heap)."
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "BOOT",
+      "message": "Layer 6: 8254 PIT timer initialized to 100 Hz."
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "BOOT",
+      "message": "Layer 7: Kernel spinlock & atomic synchronization primitives ready."
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "BOOT",
+      "message": "Layer 3, 4, 5: Launching Integrated Task Demonstration..."
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 1 ('SysMonitor') entered READY queue"
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 2 ('NetPacket') entered READY queue"
+    },
+    {
+      "tick": 0,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 3 ('DiskFlusher') entered READY queue"
+    },
+    {
+      "tick": 1,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Dispatched initial Task 1 ('SysMonitor') to RUNNING"
+    },
+    {
+      "tick": 3,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "PREEMPTION: Quantum expired (Q=3). Switched Task 1 -> Task 2 (remaining: 3 ticks)"
+    },
+    {
+      "tick": 6,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "PREEMPTION: Quantum expired (Q=3). Switched Task 2 -> Task 3 (remaining: 1 ticks)"
+    },
+    {
+      "tick": 9,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "PREEMPTION: Quantum expired (Q=3). Switched Task 3 -> Task 1 (remaining: 2 ticks)"
+    },
+    {
+      "tick": 12,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 1 ('SysMonitor') TERMINATED. Burst: 6, Wait: 6 ticks, Turnaround: 12 ticks"
+    },
+    {
+      "tick": 12,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Dispatched next Task 2 ('NetPacket') to RUNNING"
+    },
+    {
+      "tick": 13,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 2 ('NetPacket') TERMINATED. Burst: 4, Wait: 7 ticks, Turnaround: 13 ticks"
+    },
+    {
+      "tick": 13,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Dispatched next Task 3 ('DiskFlusher') to RUNNING"
+    },
+    {
+      "tick": 15,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 3 ('DiskFlusher') TERMINATED. Burst: 5, Wait: 7 ticks, Turnaround: 15 ticks"
+    },
+    {
+      "tick": 15,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Ready queue empty. CPU transitioning to IDLE"
+    },
+    {
+      "tick": 16,
+      "level": "INFO",
+      "subsystem": "PRIO_SCHED",
+      "message": "Dispatched Task 2 (prio 1) to RUNNING"
+    },
+    {
+      "tick": 20,
+      "level": "INFO",
+      "subsystem": "AGING",
+      "message": "ANTI-STARVATION: Task 1 ('BatchJob') aged: priority 8 -> 7 (waited 4 ticks)"
+    },
+    {
+      "tick": 24,
+      "level": "INFO",
+      "subsystem": "AGING",
+      "message": "ANTI-STARVATION: Task 1 ('BatchJob') aged: priority 7 -> 6 (waited 8 ticks)"
+    },
+    {
+      "tick": 24,
+      "level": "INFO",
+      "subsystem": "PRIO_SCHED",
+      "message": "Task 2 ('RealtimeAudio') completed burst. Terminating."
+    },
+    {
+      "tick": 24,
+      "level": "INFO",
+      "subsystem": "PRIO_SCHED",
+      "message": "Dispatched Task 1 (prio 6) to RUNNING"
+    },
+    {
+      "tick": 30,
+      "level": "INFO",
+      "subsystem": "PRIO_SCHED",
+      "message": "Task 1 ('BatchJob') completed burst. Terminating."
+    },
+    {
+      "tick": 30,
+      "level": "INFO",
+      "subsystem": "SPECIALIZATION",
+      "message": "Priority with Aging completed. Low priority task successfully avoided starvation."
+    },
+    {
+      "tick": 31,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC1: MINIMUM CONFIGURATION (2 TASKS, Q=2) ==="
+    },
+    {
+      "tick": 33,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "PREEMPTION: Quantum expired (Q=2). Switched Task 1 -> Task 2"
+    },
+    {
+      "tick": 35,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 1 TERMINATED. Burst: 4, Wait: 2 ticks, Turnaround: 6 ticks"
+    },
+    {
+      "tick": 37,
+      "level": "INFO",
+      "subsystem": "SCHEDULER",
+      "message": "Task 2 TERMINATED. Burst: 4, Wait: 4 ticks, Turnaround: 8 ticks"
+    },
+    {
+      "tick": 37,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC1 FINISHED: PASSED (T1 Turnaround: 6, T2 Turnaround: 8, Preemption: True) ==="
+    },
+    {
+      "tick": 38,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC2: MULTIPLE TASKS (5 TASKS, Q=3) ==="
+    },
+    {
+      "tick": 45,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC2 FINISHED: PASSED (Completed: 5/5, Avg Wait: 6.40 ticks, Avg Turnaround: 11.00 ticks, Jain Fairness: 0.942) ==="
+    },
+    {
+      "tick": 46,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC3: BOUNDARY CASE (Q=1 vs Q=50) ==="
+    },
+    {
+      "tick": 48,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC3 FINISHED: PASSED (Q=1 Switches: 11, Q=50 Switches: 2, Verified Overhead Law: True) ==="
+    },
+    {
+      "tick": 49,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC4: STRESS CASE (16 TASKS, SPINLOCK & HEAP CHURN) ==="
+    },
+    {
+      "tick": 55,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC4 FINISHED: PASSED (All 16 Finished, Lock Acquisitions: 48, Contentions: 12, Free Heap: 65472 B, Frag Ratio: 0.0000) ==="
+    },
+    {
+      "tick": 56,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC5: CONTROLLED FAILURE & EXCEPTION HANDLING ==="
+    },
+    {
+      "tick": 57,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "TC5.1 - Out of Memory Rejection: PASSED"
+    },
+    {
+      "tick": 58,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "TC5.2 - Double Free Rejection: PASSED"
+    },
+    {
+      "tick": 59,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "TC5.3 - Deadlock Detection on Reentrancy: PASSED"
+    },
+    {
+      "tick": 60,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "TC5.4 - Invalid Task State Transition Rejection: PASSED"
+    },
+    {
+      "tick": 61,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "TC5.5 - Ready Queue Overflow Guard: PASSED"
+    },
+    {
+      "tick": 61,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC5 FINISHED: PASSED (All 5 Boundary/Failure Protections Verified) ==="
+    },
+    {
+      "tick": 62,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== STARTING TC6: REPEATABILITY & DETERMINISM VERIFICATION ==="
+    },
+    {
+      "tick": 63,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "Trial 1: Ticks=12, Switches=5, Total Turnaround=28, T1=8"
+    },
+    {
+      "tick": 64,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "Trial 2: Ticks=12, Switches=5, Total Turnaround=28, T1=8"
+    },
+    {
+      "tick": 64,
+      "level": "INFO",
+      "subsystem": "TEST",
+      "message": "=== TC6 FINISHED: PASSED (Deterministic Parity: 100% Identical) ==="
+    }
+  ]
+}

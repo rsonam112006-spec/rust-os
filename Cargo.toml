@@ -1,0 +1,30 @@
+[package]
+name = "rust-micro-os"
+version = "0.1.0"
+edition = "2021"
+authors = ["CA-6 Engineering Student <student@os-course.edu>"]
+description = "A modular, educational Micro-OS implemented in Rust demonstrating core OS mechanisms on VirtualBox"
+license = "MIT"
+
+[features]
+default = ["std"]
+std = []
+baremetal = []
+
+[dependencies]
+
+[[bin]]
+name = "rust-micro-os"
+path = "src/main.rs"
+
+[lib]
+name = "micro_os"
+path = "src/lib.rs"
+
+[profile.dev]
+opt-level = 1
+overflow-checks = true
+
+[profile.release]
+opt-level = 2
+panic = "abort"

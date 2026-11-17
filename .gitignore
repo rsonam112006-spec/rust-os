@@ -1,0 +1,24 @@
+# Rust build artifacts
+target/
+**/*.rs.bk
+Cargo.lock
+
+# VirtualBox generated files
+*.vdi
+*.vmdk
+*.vhd
+*.iso
+*.nvram
+*.log
+*.vbox
+*.vbox-prev
+
+# Test and trace outputs (keep structure, exclude large run logs)
+traces/*.tmp
+results/*.png
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
