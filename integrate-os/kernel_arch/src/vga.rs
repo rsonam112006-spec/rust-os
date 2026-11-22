@@ -180,7 +180,7 @@ impl Writer {
         let divider = "----------------------------------------------------------------------";
         self.write_str_at(7, 4, divider, Color::DarkGray, Color::Black);
         self.write_str_at(8, 4, "Research: Page Replacement Under Locality (FIFO, LRU, Optimal, Clock)", Color::Yellow, Color::Black);
-        self.write_str_at(9, 4, "Commands: help, wifi, wifi scan, ping, benchmark, anomaly, snap, apt, clear", Color::LightCyan, Color::Black);
+        self.write_str_at(9, 4, "Commands: help, memory, storage, cpu, dir, wifi scan, ping, benchmark", Color::LightCyan, Color::Black);
         self.write_str_at(10, 4, divider, Color::DarkGray, Color::Black);
 
         // 6. Reset prompt cursor

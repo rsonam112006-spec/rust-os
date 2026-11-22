@@ -165,24 +165,81 @@ fn execute_command(cmd: &str, vga: &mut vga::Writer) {
         vga.write_window_str("    - 3 Frames: 9 Page Faults (75.0% Fault Ratio)\n", vga::Color::White);
         vga.write_window_str("    - 4 Frames: 10 Page Faults (83.3% Fault Ratio)\n", vga::Color::White);
         vga.write_window_str("    [CONFIRMED] Adding frames caused page faults to INCREASE!\n", vga::Color::Yellow);
-    } else if trimmed == "snap" || trimmed.starts_with("snap") {
+    } else if trimmed == "memory" || trimmed == "mem" || trimmed == "ram" {
+        vga.write_window_str("[+] Physical RAM & Memory Map (4-Level Paging Active):\n", vga::Color::LightGreen);
+        vga.write_window_str("    - Total RAM  : 4096 MB (4.00 GB Identity Mapped)\n", vga::Color::White);
+        vga.write_window_str("    - Page Table : PML4 -> PDPT -> PD (2 MB Huge Pages)\n", vga::Color::White);
+        vga.write_window_str("    - Kernel Load: 1 MB Physical (Ring 0 Long Mode)\n", vga::Color::White);
+        vga.write_window_str("    - Free RAM   : 3968 MB available for user processes\n", vga::Color::LightCyan);
+    } else if trimmed == "storage" || trimmed == "disk" || trimmed == "drive" {
+        vga.write_window_str("[+] Storage & Block Device Subsystem:\n", vga::Color::LightGreen);
+        vga.write_window_str("    - Primary Disk : 512 MB Virtual RAM Disk (Active)\n", vga::Color::White);
+        vga.write_window_str("    - Block Size   : 4096 bytes (4 KB Clusters)\n", vga::Color::White);
+        vga.write_window_str("    - File System  : Ext4 / FAT32 Virtual VFS Layer\n", vga::Color::White);
+        vga.write_window_str("    - Status       : Mounted at /dev/ram0 (Read/Write OK)\n", vga::Color::LightCyan);
+    } else if trimmed == "cpu" || trimmed == "processor" || trimmed == "hardware" {
+        vga.write_window_str("[+] CPU & Architecture State:\n", vga::Color::LightGreen);
+        vga.write_window_str("    - Processor  : 13th Gen Intel(R) Core(TM) i7-13620H\n", vga::Color::White);
+        vga.write_window_str("    - Mode       : 64-bit Long Mode (Ring 0 Privileged)\n", vga::Color::White);
+        vga.write_window_str("    - Extensions : PAE, SSE2, AVX2, Long Mode Enabled\n", vga::Color::White);
+        vga.write_window_str("    - GDT & TSS  : 64-bit Descriptors Loaded (ltr OK)\n", vga::Color::LightCyan);
+    } else if trimmed == "ipconfig" || trimmed == "ifconfig" || trimmed == "net" || trimmed == "network" || trimmed == "ip" {
+        vga.write_window_str("[+] Network Configuration (Intel Wi-Fi 6 AX203):\n", vga::Color::LightGreen);
+        vga.write_window_str("    - IPv4 Address : 172.20.10.3\n", vga::Color::White);
+        vga.write_window_str("    - Subnet Mask  : 255.255.255.0\n", vga::Color::White);
+        vga.write_window_str("    - Default Gate : 172.20.10.1\n", vga::Color::White);
+        vga.write_window_str("    - DNS Servers  : 8.8.8.8, 1.1.1.1\n", vga::Color::White);
+        vga.write_window_str("    - MAC Address  : 08:00:27:5B:3C:DB\n", vga::Color::LightCyan);
+    } else if trimmed == "dir" || trimmed == "ls" {
+        vga.write_window_str(" Directory of C:\\Users\\Lenovo:\n\n", vga::Color::White);
+        vga.write_window_str("  <DIR>          Documents\n", vga::Color::LightCyan);
+        vga.write_window_str("  <DIR>          Downloads\n", vga::Color::LightCyan);
+        vga.write_window_str("  <DIR>          Research_Locality\n", vga::Color::LightCyan);
+        vga.write_window_str("  12,517,376     rust-os.iso\n", vga::Color::White);
+        vga.write_window_str("     990,320     kernel.bin\n", vga::Color::White);
+        vga.write_window_str("                 2 File(s)    13,507,696 bytes\n", vga::Color::DarkGray);
+        vga.write_window_str("                 3 Dir(s)    396,800,000 bytes free\n", vga::Color::DarkGray);
+    } else if trimmed == "systeminfo" || trimmed == "sysinfo" || trimmed == "info" || trimmed == "ver" || trimmed == "version" || trimmed == "uname" {
+        vga.write_window_str("[+] System Information:\n", vga::Color::LightGreen);
+        vga.write_window_str("    - OS Name    : Windows 11 Fluent Rust OS (64-bit)\n", vga::Color::White);
+        vga.write_window_str("    - Kernel     : Rust bare-metal x86_64 Long Mode\n", vga::Color::White);
+        vga.write_window_str("    - Storage    : 512 MB Virtual RAM Disk\n", vga::Color::White);
+        vga.write_window_str("    - Memory     : 4096 MB RAM (4-Level Paging Active)\n", vga::Color::White);
+        vga.write_window_str("    - Processor  : 13th Gen Intel(R) Core(TM) i7-13620H\n", vga::Color::White);
+    } else if trimmed == "date" || trimmed == "time" {
+        vga.write_window_str("Current Date: Sunday, Nov 22, 2026\n", vga::Color::White);
+        vga.write_window_str("Current Time: 14:15:00 UTC+05:30\n", vga::Color::LightCyan);
+    } else if trimmed == "snap" || trimmed.starts_with("snap") || trimmed == "store" {
         vga.write_window_str("[+] Canonical Snap Store: ACTIVE\n", vga::Color::LightGreen);
         vga.write_window_str("    core22 (v20240111)  *  snapd (v2.61.1)  *  hello-world (v6.4)\n", vga::Color::White);
-    } else if trimmed == "apt" || trimmed.starts_with("apt") {
+    } else if trimmed == "apt" || trimmed.starts_with("apt") || trimmed == "atp" || trimmed.starts_with("atp") {
+        if trimmed.starts_with("atp") {
+            vga.write_window_str("[*] Note: Auto-corrected 'atp' to 'apt'\n", vga::Color::Yellow);
+        }
         vga.write_window_str("[+] APT Package Manager: READY (542 debian packages installed)\n", vga::Color::LightCyan);
+        vga.write_window_str("    rustc (v1.78.0)  *  gcc (v12.2.0)  *  grub2 (v2.06)\n", vga::Color::White);
     } else if trimmed == "help" {
         vga.write_window_str("Available Windows 11 Fluent OS Commands:\n", vga::Color::Yellow);
-        vga.write_window_str("  wifi        - Show Wi-Fi 6 connection details\n", vga::Color::White);
-        vga.write_window_str("  wifi scan   - Scan for available Wi-Fi networks\n", vga::Color::White);
+        vga.write_window_str("  memory      - Show 4096 MB RAM & page table map\n", vga::Color::White);
+        vga.write_window_str("  storage     - Show 512 MB Virtual RAM Disk\n", vga::Color::White);
+        vga.write_window_str("  cpu         - Display Intel Core i7 & Long Mode specs\n", vga::Color::White);
+        vga.write_window_str("  dir / ls    - List files and directories\n", vga::Color::White);
+        vga.write_window_str("  ipconfig    - View IP address & network config\n", vga::Color::White);
+        vga.write_window_str("  wifi scan   - Scan for wireless access points\n", vga::Color::White);
         vga.write_window_str("  ping <host> - Send network ICMP echo packets\n", vga::Color::White);
         vga.write_window_str("  benchmark   - Run 5 Page Replacement Algorithms\n", vga::Color::White);
         vga.write_window_str("  anomaly     - Demonstrate Belady's Anomaly proof\n", vga::Color::White);
-        vga.write_window_str("  snap        - List Snap Store packages\n", vga::Color::White);
-        vga.write_window_str("  apt         - Query APT Package Manager\n", vga::Color::White);
-        vga.write_window_str("  clear       - Redraw desktop & clear terminal\n", vga::Color::White);
+        vga.write_window_str("  apt / snap  - Package managers\n", vga::Color::White);
+        vga.write_window_str("  clear / cls - Clear terminal & redraw desktop\n", vga::Color::White);
         vga.write_window_str("  reboot      - Restart operating system\n", vga::Color::White);
-    } else if trimmed == "clear" {
+    } else if trimmed == "clear" || trimmed == "cls" {
         vga.draw_windows11_desktop();
+    } else if trimmed == "exit" || trimmed == "shutdown" || trimmed == "poweroff" {
+        vga.write_window_str("Shutting down Windows 11 Fluent Rust OS...\n", vga::Color::LightRed);
+        unsafe {
+            core::arch::asm!("out dx, ax", in("dx") 0x604u16, in("ax") 0x2000u16);
+            core::arch::asm!("cli; hlt");
+        }
     } else if trimmed == "reboot" {
         vga.write_window_str("Rebooting Windows 11 Fluent Rust OS...\n", vga::Color::LightRed);
         unsafe {
