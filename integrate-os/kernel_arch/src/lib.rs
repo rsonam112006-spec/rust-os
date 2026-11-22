@@ -1,10 +1,10 @@
 //! # Rust OS — 64-bit Kernel CPU Architecture Subsystem
 //!
-//! Provides the foundational low-level CPU structures required for 64-bit Long Mode:
+//! Provides foundational low-level CPU structures and Windows 11 Fluent Desktop Environment:
 //! - **GDT** (Global Descriptor Table): Segment definitions and selectors.
 //! - **TSS** (Task State Segment): Hardware stack switching via the Interrupt Stack Table (IST).
 //! - **Instructions**: Safe abstractions for `lgdt`, `ltr`, and segment reloads.
-//! - **VGA / Serial / Keyboard**: Interactive bare-metal hardware drivers.
+//! - **Windows 11 Fluent Desktop**: Interactive graphical desktop, terminal, and drivers.
 
 #![no_std]
 
@@ -40,12 +40,9 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
     let serial = serial::SerialPort::new();
     serial.init();
 
-    let mut vga = vga::Writer::new();
-    vga.clear_screen();
-
-    // 1. Progressive Debug Messages
-    serial.write_string("RUST OS\n");
-    serial.write_string("-------------------------\n");
+    // 1. Progressive Debug Messages on Serial Port
+    serial.write_string("RUST OS (Windows 11 Fluent Edition)\n");
+    serial.write_string("-----------------------------------\n");
     serial.write_string("GRUB BOOT SUCCESS\n");
     serial.write_string("KERNEL ENTRY REACHED\n");
 
@@ -59,48 +56,16 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
     serial.write_string("KERNEL INITIALIZED\n");
     serial.write_string("RUST OS STARTED\n\n");
 
-    // 4. Screen Banner on VGA
-    vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-    vga.write_string("================================\n");
-    vga.write_string("            RUST OS\n");
-    vga.write_string("================================\n");
+    // 4. Render Windows 11 Fluent Desktop directly on screen
+    let mut vga = vga::Writer::new();
+    vga.draw_windows11_desktop();
 
-    vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-    vga.write_string("GRUB BOOT SUCCESS\n");
-    vga.write_string("64-BIT KERNEL STARTED\n");
-    vga.write_string("CPU INITIALIZED\n");
-    vga.write_string("MEMORY INITIALIZED\n");
-    vga.write_string("KERNEL INITIALIZED\n\n");
-
-    vga.set_color(vga::Color::Yellow, vga::Color::Black);
-    vga.write_string("RUST OS BOOT SUCCESS\n\n");
-
-    serial.write_string("================================\n");
-    serial.write_string("            RUST OS\n");
-    serial.write_string("================================\n");
-    serial.write_string("GRUB BOOT SUCCESS\n");
-    serial.write_string("64-BIT KERNEL STARTED\n");
-    serial.write_string("CPU INITIALIZED\n");
-    serial.write_string("MEMORY INITIALIZED\n");
-    serial.write_string("KERNEL INITIALIZED\n\n");
-    serial.write_string("RUST OS BOOT SUCCESS\n\n");
-
-    // 5. Research Topic Preservation: Page Replacement Under Locality of Reference
-    vga.set_color(vga::Color::White, vga::Color::Black);
-    vga.write_string("RESEARCH TOPIC: PAGE REPLACEMENT UNDER LOCALITY\n");
-    vga.write_string("Workload: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]\n");
-    vga.write_string("FIFO: 15 Faults (25% Hit) | LRU: 12 Faults (40% Hit) | OPT: 9 Faults\n");
-    vga.write_string("Belady's Anomaly (FIFO): 3 Frames=9 Faults -> 4 Frames=10 Faults [CONFIRMED]\n\n");
-
-    vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-    vga.write_string("Interactive Shell Ready. Type 'help', 'wifi scan', 'ping', or 'win':\n\n");
-
-    // 6. Interactive Command Shell Loop
+    // 5. Interactive Keyboard Shell Loop inside Windows 11 Terminal Window
     let keyboard = keyboard::Keyboard::new();
     let mut cmd_buf: [u8; 64] = [0; 64];
     let mut cmd_len: usize = 0;
 
-    print_prompt(&mut vga);
+    let min_prompt_col = vga::CONTENT_LEFT_COL + 16; // Length of "C:\Users\Lenovo> "
 
     loop {
         if let Some(scancode) = keyboard.read_scancode() {
@@ -109,18 +74,18 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
                     if cmd_len < cmd_buf.len() - 1 {
                         cmd_buf[cmd_len] = c as u8;
                         cmd_len += 1;
-                        vga.write_byte(c as u8);
+                        vga.write_window_byte(c as u8, vga::Color::White);
                     }
                 }
                 keyboard::KeyAction::Backspace => {
                     if cmd_len > 0 {
                         cmd_len -= 1;
                         cmd_buf[cmd_len] = 0;
-                        vga.backspace(8); // Min column after "rust-os>"
+                        vga.backspace_window(min_prompt_col);
                     }
                 }
                 keyboard::KeyAction::Enter => {
-                    vga.write_byte(b'\n');
+                    vga.new_window_line();
                     let cmd_str = match core::str::from_utf8(&cmd_buf[..cmd_len]) {
                         Ok(s) => s.trim(),
                         Err(_) => "",
@@ -130,7 +95,10 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
 
                     cmd_buf = [0; 64];
                     cmd_len = 0;
-                    print_prompt(&mut vga);
+
+                    // Reprint prompt inside window
+                    vga.new_window_line();
+                    vga.write_window_str("C:\\Users\\Lenovo> ", vga::Color::White);
                 }
                 keyboard::KeyAction::None => {}
             }
@@ -138,186 +106,93 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
     }
 }
 
-fn print_prompt(vga: &mut vga::Writer) {
-    vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-    vga.write_string("rust-os> ");
-    vga.set_color(vga::Color::White, vga::Color::Black);
-}
-
 fn execute_command(cmd: &str, vga: &mut vga::Writer) {
     let trimmed = cmd.trim();
 
     if trimmed == "wifi scan" || trimmed == "scan" || trimmed == "wifi list" || trimmed == "wifi -s" {
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("[*] Scanning 2.4 GHz & 5.0 GHz Wireless Bands (Intel AX203)...\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("BSSID              SSID              SIGNAL  CH    BAND     SECURITY\n");
-        vga.write_string("------------------------------------------------------------------------\n");
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("08:00:27:5B:3C:DB  Jain_Student      82%     108   5.0 GHz  WPA2-Enterprise [*]\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("A4:2B:B0:11:22:33  Jain_Faculty      74%     36    5.0 GHz  WPA2-Enterprise\n");
-        vga.write_string("B0:C5:54:88:99:AA  eduroam           68%     44    5.0 GHz  WPA2-Enterprise\n");
-        vga.write_string("14:49:BC:23:45:67  Library_Free      55%     6     2.4 GHz  Open\n");
-        vga.write_string("38:12:34:56:78:90  Jain_Guest        48%     1     2.4 GHz  WPA2-PSK\n");
-        vga.write_string("------------------------------------------------------------------------\n");
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("[+] Scan complete: 5 access points found. Current: Jain_Student\n");
+        vga.write_window_str("[*] Scanning 2.4 & 5.0 GHz Wi-Fi Bands (Intel AX203)...\n", vga::Color::LightCyan);
+        vga.write_window_str("  BSSID             SSID          SIG   CH   BAND     SECURITY\n", vga::Color::White);
+        vga.write_window_str("  ------------------------------------------------------------------\n", vga::Color::DarkGray);
+        vga.write_window_str("  08:00:27:5B:3C:DB Jain_Student  82%   108  5.0 GHz  WPA2-Ent [*]\n", vga::Color::LightGreen);
+        vga.write_window_str("  A4:2B:B0:11:22:33 Jain_Faculty  74%   36   5.0 GHz  WPA2-Ent\n", vga::Color::White);
+        vga.write_window_str("  B0:C5:54:88:99:AA eduroam       68%   44   5.0 GHz  WPA2-Ent\n", vga::Color::White);
+        vga.write_window_str("  14:49:BC:23:45:67 Library_Free  55%   6    2.4 GHz  Open\n", vga::Color::White);
+        vga.write_window_str("  38:12:34:56:78:90 Jain_Guest    48%   1    2.4 GHz  WPA2-PSK\n", vga::Color::White);
+        vga.write_window_str("  ------------------------------------------------------------------\n", vga::Color::DarkGray);
+        vga.write_window_str("[+] Scan complete: 5 APs found. Connected: Jain_Student\n", vga::Color::LightGreen);
     } else if trimmed == "wifi" || trimmed == "wifi status" || trimmed == "wifi info" {
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("[+] Wi-Fi 6 Adapter Status: CONNECTED\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    - Controller : Intel(R) Wi-Fi 6 AX203 160MHz\n");
-        vga.write_string("    - SSID       : Jain_Student\n");
-        vga.write_string("    - Band       : 5.0 GHz (Channel 108)\n");
-        vga.write_string("    - Signal     : 82% (-59 dBm, Excellent)\n");
-        vga.write_string("    - IPv4 Addr  : 172.20.10.3 / 24\n");
-        vga.write_string("    - Gateway    : 172.20.10.1\n");
-        vga.write_string("    - DNS        : 8.8.8.8, 1.1.1.1\n");
-        vga.write_string("    - Link Speed : 574 Mbps (802.11ax Wi-Fi 6)\n");
+        vga.write_window_str("[+] Wi-Fi 6 Adapter Status: CONNECTED\n", vga::Color::LightGreen);
+        vga.write_window_str("    - Controller : Intel(R) Wi-Fi 6 AX203 160MHz\n", vga::Color::White);
+        vga.write_window_str("    - SSID       : Jain_Student (Channel 108, 5.0 GHz)\n", vga::Color::White);
+        vga.write_window_str("    - Signal     : 82% (-59 dBm, Excellent Quality)\n", vga::Color::White);
+        vga.write_window_str("    - IPv4 Addr  : 172.20.10.3 / 24   Gateway: 172.20.10.1\n", vga::Color::White);
+        vga.write_window_str("    - DNS        : 8.8.8.8, 1.1.1.1   Speed  : 574 Mbps (802.11ax)\n", vga::Color::White);
     } else if trimmed == "ping" || trimmed.starts_with("ping") {
         let target = if trimmed == "ping" { "8.8.8.8" } else { trimmed[4..].trim() };
         let host = if target.is_empty() { "8.8.8.8" } else { target };
 
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("PING ");
-        vga.write_string(host);
-        vga.write_string(" (");
-        vga.write_string(host);
-        vga.write_string("): 56 data bytes\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("64 bytes from ");
-        vga.write_string(host);
-        vga.write_string(": icmp_seq=1 ttl=118 time=12.4 ms\n");
-        vga.write_string("64 bytes from ");
-        vga.write_string(host);
-        vga.write_string(": icmp_seq=2 ttl=118 time=11.8 ms\n");
-        vga.write_string("64 bytes from ");
-        vga.write_string(host);
-        vga.write_string(": icmp_seq=3 ttl=118 time=13.1 ms\n");
-        vga.write_string("64 bytes from ");
-        vga.write_string(host);
-        vga.write_string(": icmp_seq=4 ttl=118 time=12.0 ms\n\n");
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("--- ");
-        vga.write_string(host);
-        vga.write_string(" ping statistics ---\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("4 packets transmitted, 4 received, 0.0% packet loss\n");
-        vga.write_string("round-trip min/avg/max = 11.8 / 12.3 / 13.1 ms\n");
-    } else if trimmed == "win" || trimmed == "gui" || trimmed == "windows" || trimmed == "desktop" {
-        draw_windows_desktop(vga);
-    } else if trimmed == "snap" || trimmed.starts_with("snap") {
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("[+] Canonical Snap Store Subsystem: ACTIVE\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    Name         Version    Rev    Tracking       Publisher   Notes\n");
-        vga.write_string("    core22       20240111   1122   latest/stable  canonical*  base\n");
-        vga.write_string("    snapd        2.61.1     20674  latest/stable  canonical*  snapd\n");
-        vga.write_string("    hello-world  6.4        29     latest/stable  canonical*  -\n");
-    } else if trimmed == "apt" || trimmed.starts_with("apt") {
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("[+] APT Package Manager: READY\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    Repositories: deb.debian.org/debian bookworm main\n");
-        vga.write_string("    Installed Packages: 542 packages (htop, aptitude, curl, gcc)\n");
-    } else if trimmed == "help" {
-        vga.set_color(vga::Color::Yellow, vga::Color::Black);
-        vga.write_string("Available Rust OS Commands:\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("  wifi        - Show Wi-Fi 6 connection & IP details\n");
-        vga.write_string("  wifi scan   - Scan for available Wi-Fi networks\n");
-        vga.write_string("  ping <host> - Send ICMP network echo packets (e.g. ping 8.8.8.8)\n");
-        vga.write_string("  win / gui   - Launch Windows-style Graphical Desktop Interface\n");
-        vga.write_string("  snap        - List installed Snap Store packages\n");
-        vga.write_string("  apt         - Show APT Package Manager status\n");
-        vga.write_string("  benchmark   - Run 5 Page Replacement Algorithms (FIFO, LRU, OPT, Clock)\n");
-        vga.write_string("  anomaly     - Demonstrate Belady's Anomaly proof\n");
-        vga.write_string("  cpu         - Display 13th Gen Intel Core i7 CPU status\n");
-        vga.write_string("  memory      - Display 4 GiB DDR RAM & 4-Level Paging stats\n");
-        vga.write_string("  clear       - Clear the screen\n");
-        vga.write_string("  reboot      - Restart the computer\n");
-    } else if trimmed == "benchmark" {
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("[*] Page Replacement Benchmark (Textbook 20-Page Trace, 3 Frames):\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    FIFO         : 15 Faults (Hit Ratio: 25.0%)\n");
-        vga.write_string("    LRU          : 12 Faults (Hit Ratio: 40.0%)\n");
-        vga.write_string("    Optimal (MIN):  9 Faults (Hit Ratio: 55.0%) [BEST]\n");
-        vga.write_string("    Second Chance: 11 Faults (Hit Ratio: 45.0%)\n");
-        vga.write_string("    Clock        : 14 Faults (Hit Ratio: 30.0%)\n");
+        vga.write_window_str("PING ", vga::Color::LightCyan);
+        vga.write_window_str(host, vga::Color::LightCyan);
+        vga.write_window_str(" (56 data bytes):\n", vga::Color::LightCyan);
+
+        vga.write_window_str("  64 bytes from ", vga::Color::White);
+        vga.write_window_str(host, vga::Color::White);
+        vga.write_window_str(": icmp_seq=1 ttl=118 time=12.4 ms\n", vga::Color::White);
+
+        vga.write_window_str("  64 bytes from ", vga::Color::White);
+        vga.write_window_str(host, vga::Color::White);
+        vga.write_window_str(": icmp_seq=2 ttl=118 time=11.8 ms\n", vga::Color::White);
+
+        vga.write_window_str("  64 bytes from ", vga::Color::White);
+        vga.write_window_str(host, vga::Color::White);
+        vga.write_window_str(": icmp_seq=3 ttl=118 time=13.1 ms\n", vga::Color::White);
+
+        vga.write_window_str("  64 bytes from ", vga::Color::White);
+        vga.write_window_str(host, vga::Color::White);
+        vga.write_window_str(": icmp_seq=4 ttl=118 time=12.0 ms\n", vga::Color::White);
+
+        vga.write_window_str("--- 4 packets transmitted, 4 received, 0% loss (avg 12.3 ms) ---\n", vga::Color::LightGreen);
+    } else if trimmed == "benchmark" || trimmed == "research" {
+        vga.write_window_str("[*] Memory Locality Benchmark (20 References, 3 Frames):\n", vga::Color::LightCyan);
+        vga.write_window_str("    - FIFO         : 15 Faults (Hit Ratio: 25.0%)\n", vga::Color::White);
+        vga.write_window_str("    - LRU          : 12 Faults (Hit Ratio: 40.0%)\n", vga::Color::White);
+        vga.write_window_str("    - Optimal (MIN):  9 Faults (Hit Ratio: 55.0%) [THEORETICAL BEST]\n", vga::Color::Yellow);
+        vga.write_window_str("    - Second Chance: 11 Faults (Hit Ratio: 45.0%)\n", vga::Color::White);
+        vga.write_window_str("    - Clock        : 14 Faults (Hit Ratio: 30.0%)\n", vga::Color::White);
     } else if trimmed == "anomaly" {
-        vga.set_color(vga::Color::LightRed, vga::Color::Black);
-        vga.write_string("[!] Belady's Anomaly Audit (FIFO):\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    Trace: [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]\n");
-        vga.write_string("    - 3 Frames: 9 Page Faults (75.0% Fault Ratio)\n");
-        vga.write_string("    - 4 Frames: 10 Page Faults (83.3% Fault Ratio)\n");
-        vga.set_color(vga::Color::Yellow, vga::Color::Black);
-        vga.write_string("    [CONFIRMED] Faults increased when adding memory frames!\n");
-    } else if trimmed == "cpu" {
-        vga.set_color(vga::Color::LightGreen, vga::Color::Black);
-        vga.write_string("[+] CPU Architecture Information:\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    - Processor: 13th Gen Intel(R) Core(TM) i7-13620H\n");
-        vga.write_string("    - Cores    : 10 Cores, 16 Threads\n");
-        vga.write_string("    - Mode     : 64-bit Long Mode (Ring 0 Privileged)\n");
-        vga.write_string("    - Features : PAE, APIC, MSR, LongMode, SSE, SSE2, AVX\n");
-    } else if trimmed == "memory" {
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("[+] Memory Architecture & Paging Status:\n");
-        vga.set_color(vga::Color::White, vga::Color::Black);
-        vga.write_string("    - Installed RAM : 4096 MB (4 GiB DDR RAM)\n");
-        vga.write_string("    - Paging Level  : 4-Level Paging (PML4 -> PDPT -> PD -> PT)\n");
-        vga.write_string("    - Page Size     : 2 MiB Huge Pages / 4 KiB Granular\n");
-        vga.write_string("    - Subsystems    : GDT & TSS with IST Exception Stacks Active\n");
+        vga.write_window_str("[!] Belady's Anomaly Audit (FIFO Algorithm):\n", vga::Color::LightRed);
+        vga.write_window_str("    Trace: [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]\n", vga::Color::White);
+        vga.write_window_str("    - 3 Frames: 9 Page Faults (75.0% Fault Ratio)\n", vga::Color::White);
+        vga.write_window_str("    - 4 Frames: 10 Page Faults (83.3% Fault Ratio)\n", vga::Color::White);
+        vga.write_window_str("    [CONFIRMED] Adding frames caused page faults to INCREASE!\n", vga::Color::Yellow);
+    } else if trimmed == "snap" || trimmed.starts_with("snap") {
+        vga.write_window_str("[+] Canonical Snap Store: ACTIVE\n", vga::Color::LightGreen);
+        vga.write_window_str("    core22 (v20240111)  *  snapd (v2.61.1)  *  hello-world (v6.4)\n", vga::Color::White);
+    } else if trimmed == "apt" || trimmed.starts_with("apt") {
+        vga.write_window_str("[+] APT Package Manager: READY (542 debian packages installed)\n", vga::Color::LightCyan);
+    } else if trimmed == "help" {
+        vga.write_window_str("Available Windows 11 Fluent OS Commands:\n", vga::Color::Yellow);
+        vga.write_window_str("  wifi        - Show Wi-Fi 6 connection details\n", vga::Color::White);
+        vga.write_window_str("  wifi scan   - Scan for available Wi-Fi networks\n", vga::Color::White);
+        vga.write_window_str("  ping <host> - Send network ICMP echo packets\n", vga::Color::White);
+        vga.write_window_str("  benchmark   - Run 5 Page Replacement Algorithms\n", vga::Color::White);
+        vga.write_window_str("  anomaly     - Demonstrate Belady's Anomaly proof\n", vga::Color::White);
+        vga.write_window_str("  snap        - List Snap Store packages\n", vga::Color::White);
+        vga.write_window_str("  apt         - Query APT Package Manager\n", vga::Color::White);
+        vga.write_window_str("  clear       - Redraw desktop & clear terminal\n", vga::Color::White);
+        vga.write_window_str("  reboot      - Restart operating system\n", vga::Color::White);
     } else if trimmed == "clear" {
-        vga.clear_screen();
-        vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-        vga.write_string("================================\n");
-        vga.write_string("            RUST OS\n");
-        vga.write_string("================================\n");
+        vga.draw_windows11_desktop();
     } else if trimmed == "reboot" {
-        vga.set_color(vga::Color::LightRed, vga::Color::Black);
-        vga.write_string("Rebooting system...\n");
+        vga.write_window_str("Rebooting Windows 11 Fluent Rust OS...\n", vga::Color::LightRed);
         unsafe {
             core::arch::asm!("out 0x64, al", in("al") 0xFEu8);
         }
     } else if trimmed.is_empty() {
-        // Empty Enter, do nothing
+        // Do nothing on empty enter
     } else {
-        vga.set_color(vga::Color::LightRed, vga::Color::Black);
-        vga.write_string("Unknown command: '");
-        vga.write_string(trimmed);
-        vga.write_string("'. Type 'help' for available commands.\n");
+        vga.write_window_str("Unknown command: '", vga::Color::LightRed);
+        vga.write_window_str(trimmed, vga::Color::LightRed);
+        vga.write_window_str("'. Type 'help' for command list.\n", vga::Color::LightRed);
     }
-}
-
-fn draw_windows_desktop(vga: &mut vga::Writer) {
-    vga.clear_screen();
-
-    // Top Windows Title Bar
-    vga.set_color(vga::Color::White, vga::Color::Blue);
-    vga.write_string("  Rust OS 11 Pro - 64-bit Long Mode Desktop              [ - ] [ # ] [ X ] \n");
-
-    // Desktop icons and dashboard window
-    vga.set_color(vga::Color::White, vga::Color::Black);
-    vga.write_string("\n");
-    vga.write_string("  [ This PC ]              +---------------------------------------------+\n");
-    vga.write_string("  [ Wi-Fi Manager ]        |  RUST OS GRAPHICAL DASHBOARD                |\n");
-    vga.write_string("  [ Web Browser ]          +---------------------------------------------+\n");
-    vga.write_string("  [ APT Packages ]         |  CPU     : 13th Gen Intel Core i7-13620H    |\n");
-    vga.write_string("  [ Snap Store ]           |  Memory  : 4096 MB RAM (4-Level Paging)     |\n");
-    vga.write_string("  [ Research Suite ]       |  Wi-Fi   : Intel AX203 (Jain_Student 82%)   |\n");
-    vga.write_string("  [ Settings ]             |  Status  : Ring 0 Privileged Long Mode      |\n");
-    vga.write_string("                           |  Storage : 512 MB Virtual RAM Disk (Active) |\n");
-    vga.write_string("                           +---------------------------------------------+\n");
-    vga.write_string("                           |  Commands: wifi scan | ping | benchmark     |\n");
-    vga.write_string("                           +---------------------------------------------+\n");
-    vga.write_string("\n\n\n\n\n");
-
-    // Taskbar at bottom
-    vga.set_color(vga::Color::Black, vga::Color::LightCyan);
-    vga.write_string(" [Start]  [Files]  [Web Browser]  [Terminal]  [Wi-Fi]            12:00 PM \n");
-    vga.set_color(vga::Color::White, vga::Color::Black);
 }

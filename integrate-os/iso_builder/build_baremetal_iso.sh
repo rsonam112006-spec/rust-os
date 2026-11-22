@@ -17,7 +17,7 @@ mkdir -p "$STAGING_DIR/boot/grub"
 
 # 2. Write grub.cfg
 cat << 'EOF' > "$STAGING_DIR/boot/grub/grub.cfg"
-set timeout=2
+set timeout=0
 set default=0
 
 insmod font
