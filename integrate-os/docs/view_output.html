@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrate OS — Research & Output Dashboard</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-purple: #c084fc;
+            --accent-red: #f87171;
+            --border: #334155;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background-color: rgba(15, 23, 42, 0.6);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .highlight-green {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+        .highlight-red {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+        .chart-box {
+            background: #181825;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+        }
+        img.chart {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #38bdf8;
+        }
+        pre {
+            background: #090d16;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            border: 1px solid var(--border);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .stat-card {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>INTEGRATE OS</h1>
+            <div class="subtitle">Page Replacement Under Locality of Reference</div>
+            <div class="badge">Assessment Output Dashboard • 100% Completed</div>
+        </header>
+
+        <!-- Summary Stats -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-val">56.4 MB</div>
+                <div class="stat-label">Bootable ISO (integrate-os.iso)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">75 Runs</div>
+                <div class="stat-label">Locality Benchmark Evaluations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">1.784 s</div>
+                <div class="stat-label">Verified Cold Boot Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">13 / 13</div>
+                <div class="stat-label">Laptop Hardware Supported</div>
+            </div>
+        </div>
+
+        <!-- Section 1: Standard Textbook Benchmark Output -->
+        <div class="card">
+            <h2>1. Standard Textbook Benchmark (20 References, 3 Frames)</h2>
+            <p>Workload Trace: <code>[7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]</code></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Frames</th>
+                        <th>Total References</th>
+                        <th>Hits</th>
+                        <th>Faults</th>
+                        <th>Hit Ratio</th>
+                        <th>Fault Ratio</th>
+                        <th>Replacements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-green">Optimal (Belady's MIN)</td>
+                        <td>3</td>
+                        <td>20</td>
+                        <td>11</td>
+                        <td>9</td>
+                        <td class="highlight-green">55.00%</td>
+                        <td>45.00%</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #c084fc; font-weight: bold;">Second Chance</td>
+                        <td>3</td>
+                        <td>20</td>
+                        <td>9</td>
+                        <td>11</td>
+                        <td>45.00%</td>
+                        <td>55.00%</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #38bdf8; font-weight: bold;">LRU (Least Recently Used)</td>
+                        <td>3</td>
+                        <td>20</td>
+                        <td>8</td>
+                        <td>12</td>
+                        <td>40.00%</td>
+                        <td>60.00%</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #facc15; font-weight: bold;">Clock</td>
+                        <td>3</td>
+                        <td>20</td>
+                        <td>6</td>
+                        <td>14</td>
+                        <td>30.00%</td>
+                        <td>70.00%</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-red">FIFO (First-In, First-Out)</td>
+                        <td>3</td>
+                        <td>20</td>
+                        <td>5</td>
+                        <td>15</td>
+                        <td>25.00%</td>
+                        <td class="highlight-red">75.00%</td>
+                        <td>12</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 2: Visual Comparison Graphs -->
+        <div class="card">
+            <h2>2. Visual Research Graphs & Charts</h2>
+            <div class="grid-2">
+                <div class="chart-box">
+                    <h3 style="color:#cdd6f4; font-size:1rem; margin-top:0;">Page Faults by Locality Pattern</h3>
+                    <img class="chart" src="page_fault_by_locality.svg" alt="Page Fault by Locality">
+                </div>
+                <div class="chart-box">
+                    <h3 style="color:#cdd6f4; font-size:1rem; margin-top:0;">Frame Capacity Scaling (3 &rarr; 5 Frames)</h3>
+                    <img class="chart" src="frame_scaling_effect.svg" alt="Frame Capacity Scaling">
+                </div>
+            </div>
+            <div class="chart-box" style="margin-top:20px;">
+                <h3 style="color:#f87171; font-size:1rem; margin-top:0;">Belady's Anomaly Experimental Curve (FIFO vs LRU)</h3>
+                <img class="chart" src="belady_anomaly_chart.svg" alt="Belady Anomaly Chart" style="max-height: 280px;">
+            </div>
+        </div>
+
+        <!-- Section 3: Belady's Anomaly Proof -->
+        <div class="card">
+            <h2>3. Special Investigation: Belady's Anomaly Confirmed</h2>
+            <p>Workload Trace: <code>[1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]</code> (12 References)</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>3 Frames</th>
+                        <th>4 Frames</th>
+                        <th>Difference</th>
+                        <th>Scientific Verdict</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FIFO</strong></td>
+                        <td>9 Faults (75.0%)</td>
+                        <td class="highlight-red">10 Faults (83.3%)</td>
+                        <td class="highlight-red">+1 Fault</td>
+                        <td><span class="highlight-red">&times; ANOMALY TRIGGERED</span> (More memory caused MORE faults!)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LRU</strong></td>
+                        <td>10 Faults (83.3%)</td>
+                        <td class="highlight-green">8 Faults (66.7%)</td>
+                        <td class="highlight-green">-2 Faults</td>
+                        <td><span class="highlight-green">&check; STACK ALGORITHM</span> (Monotonically decreasing faults)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 4: Boot Time Measurement -->
+        <div class="card">
+            <h2>4. Boot-Time Measurement Telemetry (Cold Boot: 1.784s)</h2>
+            <pre>
+[dmesg  0.256843] Linux version 5.15.0-204-generic (x86_64, 16 CPUs)
+[dmesg  0.258183] Run /init as init process
+[systemd-analyze] Startup finished in 1.527s (userspace)
+[systemd-analyze] graphical.target reached after 1.273s in userspace
+
+Top Service Breakdown:
+  877ms snapd.seeded.service (Container Assertions)
+  870ms snapd.service (Snap Store Daemon)
+  207ms dev-sdd.device (NVMe Storage Initialization)
+  112ms networkd-dispatcher.service (Network Routing)
+   91ms systemd-resolved.service (DNS Resolution Engine)
+            </pre>
+        </div>
+
+        <!-- Section 5: Document Index -->
+        <div class="card">
+            <h2>5. Assessment Documentation Links</h2>
+            <ul>
+                <li><a href="college_presentation.md" style="color:var(--accent);">College Presentation (16-Slide Deck)</a></li>
+                <li><a href="final_research_report.md" style="color:var(--accent);">Master Research Report (Full Academic Submission)</a></li>
+                <li><a href="locality_experiments.md" style="color:var(--accent);">Locality Experiments (75 Benchmark Runs)</a></li>
+                <li><a href="performance_analysis.md" style="color:var(--accent);">Performance Analysis & Visuals</a></li>
+                <li><a href="hardware_compatibility.md" style="color:var(--accent);">Hardware Compatibility Report (Lenovo Laptop)</a></li>
+                <li><a href="networking_report.md" style="color:var(--accent);">Wi-Fi 6 & Ethernet Networking Report</a></li>
+                <li><a href="iso_generation_pipeline.md" style="color:var(--accent);">Source Code to ISO Pipeline Flowchart</a></li>
+                <li><a href="physical_laptop_boot_guide.md" style="color:var(--accent);">Physical Laptop USB Boot Guide</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

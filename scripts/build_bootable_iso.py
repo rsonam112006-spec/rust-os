@@ -1,60 +1,34 @@
 #!/usr/bin/env python3
 """
 scripts/build_bootable_iso.py
-Builds a bootable disk image / ISO (micro-os.iso) for Oracle VirtualBox.
-Supports standard ISO 9660 with El Torito boot catalog or FAT32 UEFI structure.
+Builds a bootable disk image / ISO (micro-os.iso and micro-os.img) for Oracle VirtualBox.
+Supports standard ISO 9660 with El Torito boot catalog and 1.44MB Floppy emulation.
+Boots directly into the Windows 11 Fluent Graphical Desktop Kernel.
 """
 
 import os
 import sys
-import subprocess
 import struct
 
-def create_minimal_boot_sector():
-    """Generates a standard 512-byte BIOS MBR boot sector with 0xAA55 signature."""
-    sector = bytearray(512)
-    # Minimal x86 16-bit code:
-    # cli; cld; mov ax, 0x07C0; mov ds, ax; mov si, msg;
-    # print_loop: lodsb; test al, al; jz halt; mov ah, 0x0E; int 0x10; jmp print_loop;
-    # halt: hlt; jmp halt
-    code = bytes([
-        0xFA, 0xFC, 0xB8, 0xC0, 0x07, 0x8E, 0xD8, 0xBE, 0x1E, 0x00,
-        0xAC, 0x84, 0xC0, 0x74, 0x06, 0xB4, 0x0E, 0xCD, 0x10, 0xEB,
-        0xF5, 0xF4, 0xEB, 0xFD
-    ])
-    msg = b"\r\n[Rust-MicroOS] Booting under Oracle VirtualBox (CA-6)...\r\n\0"
-    sector[0:len(code)] = code
-    sector[0x1E:0x1E+len(msg)] = msg
-    sector[510] = 0x55
-    sector[511] = 0xAA
-    return bytes(sector)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from build_gui_boot import build_full_gui_system
+except ImportError:
+    from scripts.build_gui_boot import build_full_gui_system
 
 def build_iso(out_path="micro-os.iso"):
-    print(f"Generating bootable image for VirtualBox: {out_path}")
-    
-    # Check if a custom kernel binary exists
-    kernel_bin = "target/x86_64-unknown-none/release/rust-micro-os"
-    if not os.path.exists(kernel_bin):
-        kernel_bin = "target/release/rust-micro-os.exe"
+    print(f"[*] Generating Windows 11 Fluent Graphical OS Image for VirtualBox: {out_path}")
 
-    boot_sector = create_minimal_boot_sector()
+    gui_img = build_full_gui_system()
 
-    # Create a 1.44 MB floppy emulation image (standard El Torito payload)
+    # Create 1.44 MB floppy emulation image (standard El Torito payload)
     floppy_img = bytearray(1440 * 1024)
-    floppy_img[0:512] = boot_sector
+    floppy_img[0:len(gui_img)] = gui_img
 
-    # If kernel binary exists, append it to sectors starting at sector 1
-    if os.path.exists(kernel_bin):
-        with open(kernel_bin, "rb") as f:
-            kdata = f.read()
-        max_copy = min(len(kdata), len(floppy_img) - 512)
-        floppy_img[512:512+max_copy] = kdata[:max_copy]
-        print(f"Embedded kernel payload ({max_copy} bytes) into boot image.")
-
-    # Write 1.44MB boot image
+    # Write 1.44MB boot floppy image
     with open("micro-os.img", "wb") as f:
         f.write(floppy_img)
-    print("Created raw boot floppy image: micro-os.img")
+    print(f"[+] Created raw boot floppy image: micro-os.img ({len(gui_img)} kernel bytes embedded)")
 
     # Construct ISO 9660 with El Torito specification
     # Sector size = 2048 bytes
@@ -66,7 +40,13 @@ def build_iso(out_path="micro-os.iso"):
     pvd[0] = 0x01 # Type 1: PVD
     pvd[1:6] = b"CD001"
     pvd[6] = 0x01 # Version
-    pvd[40:72] = b"RUST_MICROOS_CA6".ljust(32)
+    pvd[40:72] = b"WIN11_MICROOS   ".ljust(32, b" ")
+    # Volume Space Size (Little + Big Endian, 8 bytes total at offset 80)
+    struct.pack_into("<I", pvd, 80, iso_sectors)
+    struct.pack_into(">I", pvd, 84, iso_sectors)
+    # Logical Block Size (2048 bytes at offset 128)
+    struct.pack_into("<H", pvd, 128, 2048)
+    struct.pack_into(">H", pvd, 130, 2048)
     iso_data[16 * 2048 : 17 * 2048] = pvd
 
     # Sector 17: Boot Record Volume Descriptor (El Torito)
@@ -74,25 +54,28 @@ def build_iso(out_path="micro-os.iso"):
     brvd[0] = 0x00 # Boot Record
     brvd[1:6] = b"CD001"
     brvd[6] = 0x01
-    brvd[7:39] = b"EL TORITO SPECIFICATION".ljust(32)
+    brvd[7:39] = b"EL TORITO SPECIFICATION".ljust(32, b"\x00")
     # Pointer to Boot Catalog (Sector 18)
     struct.pack_into("<I", brvd, 0x47, 18)
     iso_data[17 * 2048 : 18 * 2048] = brvd
 
     # Sector 18: Boot Catalog
     catalog = bytearray(2048)
-    # Validation Entry
+    # Validation Entry (Bytes 0x00 to 0x1F)
     catalog[0] = 0x01 # Header ID
     catalog[1] = 0x00 # Platform x86
-    catalog[0x1C] = 0x55
-    catalog[0x1D] = 0xAA
-    # Default Initial Entry
+    catalog[0x1E] = 0x55 # Key byte 1
+    catalog[0x1F] = 0xAA # Key byte 2
+    # Checksum: sum of all 16 words must be 0
+    s_val = sum(struct.unpack_from('<16H', catalog[0:32]))
+    c_val = (-s_val) & 0xFFFF
+    struct.pack_into('<H', catalog, 0x1C, c_val)
+
+    # Default Initial Entry (Bytes 0x20 to 0x3F)
     catalog[0x20] = 0x88 # Bootable
-    catalog[0x21] = 0x02 # Boot Media: 1.44 MB floppy emulation
-    # Starting sector of boot image (Sector 20)
-    struct.pack_into("<I", catalog, 0x28, 20)
-    # Sector count (1 sector for initial load)
-    struct.pack_into("<H", catalog, 0x2C, 1)
+    catalog[0x21] = 0x02 # 1.44 MB floppy emulation
+    struct.pack_into("<H", catalog, 0x26, 1)  # Sector count at 0x26
+    struct.pack_into("<I", catalog, 0x28, 20) # Load RBA at 0x28 (Sector 20)
     iso_data[18 * 2048 : 19 * 2048] = catalog
 
     # Sector 19: Volume Descriptor Set Terminator

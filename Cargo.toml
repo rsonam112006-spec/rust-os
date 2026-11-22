@@ -1,9 +1,9 @@
 [package]
 name = "rust-micro-os"
-version = "0.1.0"
+version = "2.0.0"
 edition = "2021"
 authors = ["CA-6 Engineering Student <student@os-course.edu>"]
-description = "A modular, educational Micro-OS implemented in Rust demonstrating core OS mechanisms on VirtualBox"
+description = "A modern Micro-OS in Rust with network stack (TCP/IP/ICMP/HTTP) and macOS & Windows 11 fluent desktop GUI"
 license = "MIT"
 
 [features]

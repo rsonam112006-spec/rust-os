@@ -4,7 +4,7 @@
 //! mathematically prevent starvation of low-priority workloads.
 
 use crate::task::{TaskId, TaskManager, TaskState, MAX_TASKS};
-use crate::{kinfo, ktrace};
+use crate::kinfo;
 
 pub struct PriorityScheduler {
     pub current_task_id: Option<TaskId>,
@@ -45,6 +45,9 @@ impl PriorityScheduler {
     /// Applies dynamic aging to all waiting READY tasks to prevent starvation
     pub fn apply_aging(&mut self, task_manager: &mut TaskManager, current_tick: u64) {
         let interval = self.aging_interval_ticks;
+        let mut to_age: [(TaskId, u8, u8, u64); MAX_TASKS] = [(0, 0, 0, 0); MAX_TASKS];
+        let mut age_count = 0;
+
         for slot in task_manager.tasks_slice().iter() {
             if let Some(ref tcb) = slot {
                 if tcb.state == TaskState::Ready {
@@ -53,20 +56,28 @@ impl PriorityScheduler {
                         let id = tcb.id;
                         let old_prio = tcb.dynamic_priority;
                         let new_prio = old_prio.saturating_sub(1);
-                        // Mutate
-                        let mutable_tcb = task_manager.get_task_mut(id).unwrap();
-                        mutable_tcb.dynamic_priority = new_prio;
-                        kinfo!(
-                            "AGING",
-                            "ANTI-STARVATION: Task {} ('{}') aged: priority {} -> {} (waited {} ticks)",
-                            id,
-                            mutable_tcb.name_as_str(),
-                            old_prio,
-                            new_prio,
-                            wait
-                        );
+                        if age_count < MAX_TASKS {
+                            to_age[age_count] = (id, old_prio, new_prio, wait);
+                            age_count += 1;
+                        }
                     }
                 }
+            }
+        }
+
+        for i in 0..age_count {
+            let (id, old_prio, new_prio, wait) = to_age[i];
+            if let Some(mutable_tcb) = task_manager.get_task_mut(id) {
+                mutable_tcb.dynamic_priority = new_prio;
+                kinfo!(
+                    "AGING",
+                    "ANTI-STARVATION: Task {} ('{}') aged: priority {} -> {} (waited {} ticks)",
+                    id,
+                    mutable_tcb.name_as_str(),
+                    old_prio,
+                    new_prio,
+                    wait
+                );
             }
         }
     }

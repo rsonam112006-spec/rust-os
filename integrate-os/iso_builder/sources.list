@@ -1,0 +1,10 @@
+# Integrate OS - Official APT Package Repositories
+# Primary Mirrors (Main, Universe, Restricted, Multiverse)
+
+deb http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu jammy-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu jammy-security main restricted universe multiverse
+
+# Source Repositories (Optional for debugging kernel & userspace modules)
+# deb-src http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse

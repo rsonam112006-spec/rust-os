@@ -4,6 +4,8 @@ target/
 Cargo.lock
 
 # VirtualBox generated files
+*.exe
+VirtualBox-Setup.exe
 *.vdi
 *.vmdk
 *.vhd

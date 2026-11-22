@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 400" width="100%" height="100%">
+<rect width="100%" height="100%" fill="#181825"/>
+<text x="375" y="32" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#cdd6f4" text-anchor="middle">Frame Allocation Scaling Effect on Page Faults (Mixed Workload)</text>
+<circle cx="165" cy="56" r="5" fill="#22c55e"/>
+<text x="176" y="60" font-family="Segoe UI, sans-serif" font-size="11" fill="#a6adc8">Optimal</text>
+<circle cx="270" cy="56" r="5" fill="#3b82f6"/>
+<text x="281" y="60" font-family="Segoe UI, sans-serif" font-size="11" fill="#a6adc8">LRU</text>
+<circle cx="375" cy="56" r="5" fill="#a855f7"/>
+<text x="386" y="60" font-family="Segoe UI, sans-serif" font-size="11" fill="#a6adc8">Second Chance</text>
+<circle cx="480" cy="56" r="5" fill="#eab308"/>
+<text x="491" y="60" font-family="Segoe UI, sans-serif" font-size="11" fill="#a6adc8">Clock</text>
+<circle cx="585" cy="56" r="5" fill="#ef4444"/>
+<text x="596" y="60" font-family="Segoe UI, sans-serif" font-size="11" fill="#a6adc8">FIFO</text>
+<line x1="90" y1="330.0" x2="670" y2="330.0" stroke="#313244" stroke-width="1"/>
+<text x="78" y="334.0" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">8</text>
+<line x1="90" y1="291.6666666666667" x2="670" y2="291.6666666666667" stroke="#313244" stroke-width="1"/>
+<text x="78" y="295.6666666666667" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">10</text>
+<line x1="90" y1="253.33333333333331" x2="670" y2="253.33333333333331" stroke="#313244" stroke-width="1"/>
+<text x="78" y="257.3333333333333" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">12</text>
+<line x1="90" y1="215.0" x2="670" y2="215.0" stroke="#313244" stroke-width="1"/>
+<text x="78" y="219.0" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">14</text>
+<line x1="90" y1="176.66666666666666" x2="670" y2="176.66666666666666" stroke="#313244" stroke-width="1"/>
+<text x="78" y="180.66666666666666" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">16</text>
+<line x1="90" y1="138.33333333333331" x2="670" y2="138.33333333333331" stroke="#313244" stroke-width="1"/>
+<text x="78" y="142.33333333333331" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">18</text>
+<line x1="90" y1="100.0" x2="670" y2="100.0" stroke="#313244" stroke-width="1"/>
+<text x="78" y="104.0" font-family="Segoe UI, sans-serif" font-size="11" fill="#6c7086" text-anchor="end">20</text>
+<line x1="150" y1="330" x2="150" y2="100" stroke="#313244" stroke-dasharray="3,3"/>
+<text x="150" y="354" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#89b4fa" text-anchor="middle">3 Frames</text>
+<line x1="380.0" y1="330" x2="380.0" y2="100" stroke="#313244" stroke-dasharray="3,3"/>
+<text x="380.0" y="354" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#89b4fa" text-anchor="middle">4 Frames</text>
+<line x1="610" y1="330" x2="610" y2="100" stroke="#313244" stroke-dasharray="3,3"/>
+<text x="610" y="354" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#89b4fa" text-anchor="middle">5 Frames</text>
+<path d="M 150 253.33333333333331 L 380.0 291.6666666666667 L 610 291.6666666666667" fill="none" stroke="#22c55e" stroke-width="3"/>
+<circle cx="150" cy="253.33333333333331" r="5" fill="#22c55e" stroke="#181825" stroke-width="2"/>
+<text x="162" y="245.33333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle">12</text>
+<circle cx="380.0" cy="291.6666666666667" r="5" fill="#22c55e" stroke="#181825" stroke-width="2"/>
+<text x="392.0" y="283.6666666666667" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle">10</text>
+<circle cx="610" cy="291.6666666666667" r="5" fill="#22c55e" stroke="#181825" stroke-width="2"/>
+<text x="622" y="283.6666666666667" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle">10</text>
+<path d="M 150 138.33333333333331 L 380.0 176.66666666666666 L 610 272.5" fill="none" stroke="#3b82f6" stroke-width="3"/>
+<circle cx="150" cy="138.33333333333331" r="5" fill="#3b82f6" stroke="#181825" stroke-width="2"/>
+<text x="138" y="130.33333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6" text-anchor="middle">18</text>
+<circle cx="380.0" cy="176.66666666666666" r="5" fill="#3b82f6" stroke="#181825" stroke-width="2"/>
+<text x="368.0" y="168.66666666666666" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6" text-anchor="middle">16</text>
+<circle cx="610" cy="272.5" r="5" fill="#3b82f6" stroke="#181825" stroke-width="2"/>
+<text x="598" y="264.5" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6" text-anchor="middle">11</text>
+<path d="M 150 138.33333333333331 L 380.0 195.83333333333331 L 610 272.5" fill="none" stroke="#a855f7" stroke-width="3"/>
+<circle cx="150" cy="138.33333333333331" r="5" fill="#a855f7" stroke="#181825" stroke-width="2"/>
+<text x="162" y="130.33333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#a855f7" text-anchor="middle">18</text>
+<circle cx="380.0" cy="195.83333333333331" r="5" fill="#a855f7" stroke="#181825" stroke-width="2"/>
+<text x="392.0" y="187.83333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#a855f7" text-anchor="middle">15</text>
+<circle cx="610" cy="272.5" r="5" fill="#a855f7" stroke="#181825" stroke-width="2"/>
+<text x="622" y="264.5" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#a855f7" text-anchor="middle">11</text>
+<path d="M 150 138.33333333333331 L 380.0 176.66666666666666 L 610 234.16666666666666" fill="none" stroke="#eab308" stroke-width="3"/>
+<circle cx="150" cy="138.33333333333331" r="5" fill="#eab308" stroke="#181825" stroke-width="2"/>
+<text x="138" y="130.33333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#eab308" text-anchor="middle">18</text>
+<circle cx="380.0" cy="176.66666666666666" r="5" fill="#eab308" stroke="#181825" stroke-width="2"/>
+<text x="368.0" y="168.66666666666666" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#eab308" text-anchor="middle">16</text>
+<circle cx="610" cy="234.16666666666666" r="5" fill="#eab308" stroke="#181825" stroke-width="2"/>
+<text x="598" y="226.16666666666666" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#eab308" text-anchor="middle">13</text>
+<path d="M 150 138.33333333333331 L 380.0 176.66666666666666 L 610 234.16666666666666" fill="none" stroke="#ef4444" stroke-width="3"/>
+<circle cx="150" cy="138.33333333333331" r="5" fill="#ef4444" stroke="#181825" stroke-width="2"/>
+<text x="162" y="130.33333333333331" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#ef4444" text-anchor="middle">18</text>
+<circle cx="380.0" cy="176.66666666666666" r="5" fill="#ef4444" stroke="#181825" stroke-width="2"/>
+<text x="392.0" y="168.66666666666666" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#ef4444" text-anchor="middle">16</text>
+<circle cx="610" cy="234.16666666666666" r="5" fill="#ef4444" stroke="#181825" stroke-width="2"/>
+<text x="622" y="226.16666666666666" font-family="Segoe UI, sans-serif" font-size="10" font-weight="bold" fill="#ef4444" text-anchor="middle">13</text>
+<text x="25" y="210" font-family="Segoe UI, sans-serif" font-size="12" fill="#a6adc8" transform="rotate(-90, 25, 210)" text-anchor="middle">Page Faults (Lower is Better)</text>
+</svg>

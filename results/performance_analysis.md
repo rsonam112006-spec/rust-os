@@ -1,7 +1,7 @@
 # CA-6 Micro-OS Performance & Trace Evaluation Report
 
 ## 1. Quantitative Summary
-- **Total Execution Ticks:** 64 ticks
+- **Total Execution Ticks:** 85 ticks
 - **Preemption Events:** 4
 - **Task Dispatch Events:** 5
 - **Task Completions:** 7

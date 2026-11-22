@@ -12,7 +12,10 @@
 //! - **Sync**: Atomic spinlocks and cooperative mutexes with contention tracking.
 //! - **Memory**: Bump allocator and Free-List allocator with coalescing and fragmentation metrics.
 //! - **Sys**: Minimal system call dispatching interface (`yield`, `sleep`, `malloc`, `free`, `print`, `exit`).
-//! - **Test Cases**: Standardized verification suite (TC1 through TC6).
+//! - **Net**: IEEE 802.3 Ethernet, ARP cache, IPv4 routing, ICMP ping, UDP/TCP sockets, HTTP client.
+//! - **GUI**: 32-bit TrueColor Linear Framebuffer, 2D renderer, window compositor, macOS & Win11 desktop.
+//! - **Apps**: Network Navigator & Web Browser, PowerTerminal shell, Task Manager, Finder, Settings.
+//! - **Test Cases**: Standardized verification suite (TC1 through TC8).
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -27,4 +30,7 @@ pub mod sync;
 pub mod memory;
 pub mod timer;
 pub mod sys;
+pub mod net;
+pub mod gui;
+pub mod apps;
 pub mod test_cases;
