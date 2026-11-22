@@ -82,9 +82,8 @@ pub extern "C" fn kernel_main(_multiboot_magic: u32, _multiboot_info: u64) -> ! 
     vga.write_string("FIFO: 15 Faults (25% Hit) | LRU: 12 Faults (40% Hit) | OPT: 9 Faults\n");
     vga.write_string("Belady's Anomaly (FIFO): 3 Frames=9 Faults -> 4 Frames=10 Faults [CONFIRMED]\n\n");
 
-    vga.set_color(vga::Color::LightCyan, vga::Color::Black);
-    vga.write_string("CPU State: Ring 0 Long Mode (64-bit) | Paging: 4-Level Active\n");
-    vga.write_string("Rust OS Kernel is running and stable.\n\n");
+    vga.set_color(vga::Color::LightGreen, vga::Color::Black);
+    vga.write_string("Interactive Shell Ready. Type 'help', 'wifi scan', 'ping', or 'window':\n\n");
 
     // 6. Interactive Command Shell Loop
     let keyboard = keyboard::Keyboard::new();
@@ -297,10 +296,13 @@ fn execute_command(cmd: &str, vga: &mut vga::Writer) {
         vga.write_string("================================\n");
         vga.write_string("            RUST OS\n");
         vga.write_string("================================\n");
+    } else if trimmed == "window" || trimmed == "win" || trimmed == "windows" || trimmed == "gui" || trimmed == "dashboard" || trimmed == "desktop" {
+        draw_windows_desktop(vga);
     } else if trimmed == "help" || trimmed == "?" {
         vga.set_color(vga::Color::Yellow, vga::Color::Black);
         vga.write_string("Available Rust OS Commands:\n");
         vga.set_color(vga::Color::White, vga::Color::Black);
+        vga.write_string("  window      - Open Graphical Window Dashboard\n");
         vga.write_string("  wifi        - Show Wi-Fi 6 connection details\n");
         vga.write_string("  wifi scan   - Scan for available Wi-Fi networks\n");
         vga.write_string("  ping <host> - Send network ICMP echo packets\n");
@@ -335,4 +337,33 @@ fn execute_command(cmd: &str, vga: &mut vga::Writer) {
         vga.write_string(trimmed);
         vga.write_string("'. Type 'help' for command list.\n");
     }
+}
+
+fn draw_windows_desktop(vga: &mut vga::Writer) {
+    vga.clear_screen();
+
+    // Top Windows Title Bar
+    vga.set_color(vga::Color::White, vga::Color::Blue);
+    vga.write_string("  Rust OS 11 Pro - 64-bit Long Mode Desktop              [ - ] [ # ] [ X ] \n");
+
+    // Desktop icons and dashboard window
+    vga.set_color(vga::Color::White, vga::Color::Black);
+    vga.write_string("\n");
+    vga.write_string("  [ This PC ]              +---------------------------------------------+\n");
+    vga.write_string("  [ Wi-Fi Manager ]        |  RUST OS GRAPHICAL DASHBOARD                |\n");
+    vga.write_string("  [ Web Browser ]          +---------------------------------------------+\n");
+    vga.write_string("  [ APT Packages ]         |  CPU     : 13th Gen Intel Core i7-13620H    |\n");
+    vga.write_string("  [ Snap Store ]           |  Memory  : 4096 MB RAM (4-Level Paging)     |\n");
+    vga.write_string("  [ Research Suite ]       |  Wi-Fi   : Intel AX203 (Jain_Student 82%)   |\n");
+    vga.write_string("  [ Settings ]             |  Status  : Ring 0 Privileged Long Mode      |\n");
+    vga.write_string("                           |  Storage : 512 MB Virtual RAM Disk (Active) |\n");
+    vga.write_string("                           +---------------------------------------------+\n");
+    vga.write_string("                           |  Commands: wifi scan | ping | benchmark     |\n");
+    vga.write_string("                           +---------------------------------------------+\n");
+    vga.write_string("\n\n\n\n\n");
+
+    // Taskbar at bottom
+    vga.set_color(vga::Color::Black, vga::Color::LightCyan);
+    vga.write_string(" [Start]  [Files]  [Web Browser]  [Terminal]  [Wi-Fi]            12:00 PM \n");
+    vga.set_color(vga::Color::White, vga::Color::Black);
 }
